@@ -48,5 +48,3 @@ def request_otp(request):
         phone_number=phone,
         is_used=False
     ).update(is_used=True)
-
-    

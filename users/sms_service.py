@@ -1,4 +1,3 @@
-from test_login import response
 import africastalking
 import random
 from decouple import config
