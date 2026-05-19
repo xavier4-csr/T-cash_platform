@@ -2,7 +2,7 @@ import urllib.request
 import json
 import urllib.error
 
-url = 'http://127.0.0.1:8000/api/users/login/'
+url = 'http://127.0.0.1:8000/api/users/request-otp/'
 data = {
     "phone_number": "+254700000000"
 }

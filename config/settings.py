@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config ('django-insecure-9s1z82b0k&s2c8*$r&hc4joz_fzq%s+aw09cw%=o%678f!c_po')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-9s1z82b0k&s2c8*$r&hc4joz_fzq%s+aw09cw%=o%678f!c_po')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config ('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -86,11 +86,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'T_cash',
-        'USER': 'postgres',
-        'PASSWORD': 'Xavier',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME', default='tcash_db'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -134,14 +134,18 @@ STATIC_URL = 'static/'
 AUTH_USER_MODEL = 'users.User'
 
 from datetime import timedelta
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'SIMPLE_JWT': {
-        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-        'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-        'ROTATE_REFRESH_TOKENS': True,
-        'BLACKLIST_AFTER_ROTATION': True,
-    },
+}
+
+# Simple JWT configuration — must be a TOP-LEVEL key, not inside REST_FRAMEWORK
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
