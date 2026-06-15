@@ -150,8 +150,8 @@ def b2c_result_callback(request):
     """
     expected_sig = hmac.new(
         settings.MPESA_CALLBACK_SECRET.encode(),
-        request.body,
-        hashlib.sha256,
+        msg=request.body,
+        digestmod=hashlib.sha256,
     ).hexdigest()
     received_sig = request.headers.get('X-Mpesa-Signature', '')
 

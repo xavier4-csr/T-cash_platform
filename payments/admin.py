@@ -1,36 +1,33 @@
 from django.contrib import admin
-from .models import Badge, Contribution, ContributionCycle, ContributionReversal, RotationSchedule
+from .models import Transaction, GroupTreasury, TreasuryLedgerEntry, Disbursement
 
 
-@admin.register(ContributionCycle)
-class ContributionCycleAdmin(admin.ModelAdmin):
-    list_display = ['group', 'cycle_number', 'due_date', 'is_closed', 'created_at']
-    list_filter = ['is_closed']
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ['phone_number', 'amount', 'transaction_type', 'status', 'created_at']
+    list_filter = ['transaction_type', 'status']
+    search_fields = ['phone_number', 'checkout_request_id', 'mpesa_reference']
+    readonly_fields = ['created_at']
+
+
+@admin.register(GroupTreasury)
+class GroupTreasuryAdmin(admin.ModelAdmin):
+    list_display = ['group', 'balance', 'daily_disbursement_limit', 'updated_at']
     search_fields = ['group__name']
+    readonly_fields = ['updated_at']
 
 
-@admin.register(Contribution)
-class ContributionAdmin(admin.ModelAdmin):
-    list_display = ['member', 'cycle', 'amount', 'status', 'mpesa_reference', 'paid_at']
-    list_filter = ['status']
-    search_fields = ['member__user__phone_number', 'mpesa_reference']
-    readonly_fields = ['mpesa_reference', 'paid_at', 'created_at']
-
-    def has_change_permission(self, request, obj=None):
-        # Contributions are immutable — no editing in admin
-        return False
+@admin.register(TreasuryLedgerEntry)
+class TreasuryLedgerEntryAdmin(admin.ModelAdmin):
+    list_display = ['treasury', 'entry_type', 'amount', 'description', 'created_at']
+    list_filter = ['entry_type']
+    search_fields = ['treasury__group__name', 'reference']
+    readonly_fields = ['created_at']
 
 
-@admin.register(ContributionReversal)
-class ContributionReversalAdmin(admin.ModelAdmin):
-    list_display = ['contribution', 'requested_by', 'status', 'approved_by_admin', 'approved_by_treasurer', 'created_at']
-    list_filter = ['status']
-
-
-@admin.register(Badge)
-class BadgeAdmin(admin.ModelAdmin):
-    list_display = ['member', 'badge_type', 'awarded_at']
-    list_filter = ['badge_type']
-
-
-admin.site.register(RotationSchedule)
+@admin.register(Disbursement)
+class DisbursementAdmin(admin.ModelAdmin):
+    list_display = ['recipient', 'treasury', 'amount', 'disbursement_type', 'status', 'created_at']
+    list_filter = ['disbursement_type', 'status']
+    search_fields = ['recipient__phone_number', 'conversation_id', 'mpesa_reference']
+    readonly_fields = ['created_at', 'completed_at']
